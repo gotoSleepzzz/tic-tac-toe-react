@@ -3,7 +3,6 @@ import Square from '../Square'
 import styles from './Board.module.css'
 
 export default function Board({ Squares, size, handleClick, winMove }) {
-    console.log(winMove)
     return (
         <div>
             {Array(size).fill(null).map((_, row) =>

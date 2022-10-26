@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Game from "./Components/Game";
+import { Game, calculateWinner } from "./Components/Game";
 import Option from "./Components/Option";
 import History from "./Components/History";
 import './App.css'
@@ -7,16 +7,17 @@ import './App.css'
 const WIDTH = 3
 const RULE = 3
 
-function listToMatrix(list, elementsPerSubArray) {
-  var matrix = [], i, k;
-  for (i = 0, k = -1; i < list.length; i++) {
-    if (i % elementsPerSubArray === 0) {
-      k++;
-      matrix[k] = [];
-    }
-    matrix[k].push(list[i]);
+function getGameStatus(winner, xIsNext) {
+  switch (winner) {
+    case "DRAW":
+      return <span style={{ color: "blue", fontWeight: 'bold' }} >DRAW</span>
+    case "X":
+      return <span style={{ color: "gold", fontWeight: 'bold' }} >Winner is X</span>
+    case "O":
+      return <span style={{ color: "gold", fontWeight: 'bold' }} >Winner is O</span>
+    default:
+      return <span style={{ color: "blue", fontWeight: 'bold' }} >Next player: {xIsNext ? 'X' : 'O'}</span>
   }
-  return matrix;
 }
 
 function App() {
@@ -62,15 +63,13 @@ function App() {
     if (squares[i] || winner) return;
 
     squares[i] = xIsNext ? "X" : "O";
-    const result = calculateWinner(squares)
+    const result = calculateWinner(squares, winningRule, boardSize)
 
     if (result) {
       if (result === "DRAW") {
         setWinner('DRAW')
       } else {
-        console.log('bug here')
         setWinner(squares[result[0]])
-        console.log(result)
         if (result[1]) {
           setWinMove(result)
         }
@@ -91,8 +90,7 @@ function App() {
   const jumpTo = (i) => {
     setStep(i)
     setXIsNext((i % 2) === 0)
-    const result = calculateWinner(history[i].squares)
-    console.log(result)
+    const result = calculateWinner(history[i].squares, winningRule, boardSize)
 
     if (result) {
       if (result === "DRAW") {
@@ -107,32 +105,6 @@ function App() {
     }
   }
 
-  const calculateWinner = (squares) => {
-    const winPos = Array(winningRule).fill(null)
-    const newArr = listToMatrix(squares, boardSize);
-
-    for (let i = 0; i < boardSize; i++) {
-      for (let j = 0; j < boardSize; j++) {
-        const rowCheck = winPos.map((_, index) => newArr[i] ? newArr[i][j + index] : undefined)
-        if (rowCheck.every((v) => v && v === newArr[i][j])) return winPos.map((_, index) => (i * boardSize + j + index))
-
-        const colCheck = winPos.map((_, index) => newArr[i + index] ? newArr[i + index][j] : undefined)
-        if (colCheck.every((v) => v && v === newArr[i][j])) return winPos.map((_, index) => boardSize * (i + index) + j)
-
-        const diagRightCheck = winPos.map((_, index) => newArr[i + index] ? newArr[i + index][j + index] : undefined)
-        if (diagRightCheck.every((v) => v && v === newArr[i][j])) return winPos.map((_, index) => boardSize * (i + index) + j + index)
-
-        const diagLeftCheck = winPos.map((_, index) => newArr[i + index] ? newArr[i + index][j - index] : undefined)
-        if (diagLeftCheck.every((v) => v && v === newArr[i][j])) return winPos.map((_, index) => boardSize * (i + index) + j - index)
-
-        //console.log('left', diagLeftCheck)
-        //console.log('right', diagRightCheck)
-      }
-
-    }
-    if (squares.every((v) => v)) return "DRAW"
-  }
-
   return (
     <div className="game">
       <div className="game-option">
@@ -141,17 +113,19 @@ function App() {
           winningRule={winningRule}
           resetBoard={resetBoard}
         />
-        <History HistoryBoard={history} jumpTo={jumpTo} curStep={step} isAsc={isSortAsc} sortPressed={() => { setIsSortAsc(!isSortAsc) }} />
+        <History
+          HistoryBoard={history}
+          jumpTo={jumpTo}
+          curStep={step}
+          isAsc={isSortAsc}
+          sortPressed={() => {
+            setIsSortAsc(!isSortAsc)
+          }}
+        />
       </div>
       <div className="game-board">
         {
-          winner === "DRAW" ?
-            <span style={{ color: "blue", fontWeight: 'bold' }} >DRAW</span> :
-            winner === 'X' ?
-              <span style={{ color: "gold", fontWeight: 'bold' }} >Winner is X</span> :
-              winner === 'O' ?
-                <span style={{ color: "gold", fontWeight: 'bold' }} >Winner is O</span> :
-                <span style={{ color: "blue", fontWeight: 'bold' }} >Next player: {xIsNext ? 'X' : 'O'}</span>
+          getGameStatus(winner, xIsNext)
         }
         <Game BoardSize={boardSize} BoardGame={history[step]} handleClick={onBoardClick} winMove={winMove} />
       </div>

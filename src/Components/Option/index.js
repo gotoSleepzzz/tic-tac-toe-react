@@ -5,8 +5,12 @@ export default function Option({ boardSize, winningRule, resetBoard }) {
     return (
         <div className={styles.option}>
             <div className={styles.optionSection}>
-                <label for={'boardSize'}>Board size (between 3 and 20): <span>{boardSize} x {boardSize}</span> </label>
-                <label for={'winningRule'}>The winning rule (between 3 and 5): <span>{winningRule}</span></label>
+                <label for={'boardSize'}>
+                    Board size (between 3 and 20): <span>{boardSize} x {boardSize}</span>
+                </label>
+                <label for={'winningRule'}>
+                    The winning rule (between 3 and 5): <span>{winningRule}</span>
+                </label>
             </div>
             <div className={styles.optionSection}>
                 <input
@@ -36,8 +40,9 @@ export default function Option({ boardSize, winningRule, resetBoard }) {
             </div>
             <div className={styles.optionSection}>
                 <button
-                    onClick={() => { resetBoard() }}
-                >Reset all game</button>
+                    onClick={() => { resetBoard() }}>
+                    Reset all game
+                </button>
             </div>
         </div>
     )
