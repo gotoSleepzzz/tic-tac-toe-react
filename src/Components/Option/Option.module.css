@@ -1,0 +1,24 @@
+.option {
+    display: flex;
+    flex-direction: row;
+    margin-right: 20px;
+}
+
+.optionSection {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+}
+
+.optionSection .resetBtn {
+    column-span: all;
+    background: #f00;
+}
+
+.optionSection span {
+    color: #f00;
+}
+
+.curValue {
+    padding-top: -1px;
+}

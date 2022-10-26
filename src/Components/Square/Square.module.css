@@ -1,0 +1,25 @@
+.square {
+    background: #fff;
+    border: 1px solid #999;
+    font-weight: bold;
+    float: left;
+    font-size: 20px;
+    height: 34px;
+    margin-right: -1px;
+    margin-top: -1px;
+    padding: 0;
+    text-align: center;
+    width: 34px;
+    transition: all 0.1s ease-in-out;
+}
+
+.win {
+    color: gold;
+    background-color: cornsilk;
+}
+
+.square:hover {
+    background: #ddd;
+    transform: scale(1.1);
+    box-shadow: 18px 18px 39px #d9d9d9, -18px -18px 39px #ffffff;
+}
